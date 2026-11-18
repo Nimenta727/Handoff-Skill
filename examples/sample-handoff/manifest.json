@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "skill": "agent-handoff",
+  "skill_version": "1.0.0",
+  "mode": "quick",
+  "package_mode": "quick",
+  "generated_at": "2026-11-18T16:51:00+08:00",
+  "language": "zh-CN",
+  "files": ["HANDOFF.md", "NEXT_AGENT_PROMPT.md"],
+  "validation": {"status": "passed", "notes": "Passed structural checks; semantic claims are illustrative and not independently verified"}
+}
