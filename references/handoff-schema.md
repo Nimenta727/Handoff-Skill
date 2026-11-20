@@ -1,4 +1,4 @@
-# Handoff schema V1
+# Handoff schema V1.0 / V1.1
 
 ## Required `HANDOFF.md` headings
 
@@ -70,3 +70,20 @@ A portable manifest describes the package, not semantic truth. Required fields:
 | update | mandatory based on `package_mode` | same optional files |
 
 Suggested `PROJECT_STATE.md` sections: artifact map, task ledger, domain-specific environment or prerequisites, evidence summary. `DECISIONS.md`: decision, rationale, alternatives rejected, implications. `OPEN_ISSUES.md`: issue, impact, unblocker, next diagnostic step.
+
+## V1.1 optional extensions (V1.0 packages remain valid)
+
+- schema_version may be 1.0 or 1.1. Keep nine exact headings and existing mandatory files.
+- manifest.integrity is OPTIONAL for backwards compatibility; when present it is
+  {"algorithm":"sha256","digests":{"HANDOFF.md":"<64-lowercase-hex>", ...}}
+  and MUST cover every file in manifest.files. manifest.json is intentionally
+  excluded to prevent self-hashing recursion.
+- SHA-256 checks changed bytes, not authenticity, identity, trust or semantic truth.
+- TASKS.json is OPTIONAL and MUST appear in files when used; see task-state.md.
+- Minimal receiver input may be generated with handoff_tools.py brief --max-chars 1200.
+  This is a character budget, never a promise of precise model-token counting.
+- Update mode retains package_mode; deliberate edits to sealed artifacts need
+  inspection and an explicit handoff_tools.py seal --renew step.
+
+The full handoff remains the source of truth; a brief is a disposable view,
+not another independently maintained state file.

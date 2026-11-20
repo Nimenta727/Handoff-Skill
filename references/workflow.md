@@ -41,3 +41,18 @@ Do not force software-only fields on other domains. No additional artifact shoul
 Write only to an explicit output directory or a safe newly created `handoff/` folder. Do not overwrite an existing handoff without the user's update intent. In read-only hosts, return separated Markdown content for copy-paste and acknowledge lack of on-disk files.
 
 If privacy/security evidence is ambiguous, omit or redact the sensitive detail rather than reproducing it. Include the location of a credential setup procedure only if safe.
+
+## V1.1 progressive disclosure and efficient resumption
+
+- Inspect manifest, integrity status and a bounded brief first. For quick
+  continuation do not inject PROJECT_STATE.md, all references or old transcripts.
+- Open only the exact referenced artifact necessary to unblock the first task.
+  Prefer file/commit/test references over copied source or log bodies.
+- Default brief: 1200 characters via handoff_tools.py brief --max-chars 1200.
+  Character limits are deterministic, but true token counts depend on tokenizer.
+- Updates: reconcile stable TASKS.json IDs and compare the old/new snapshots with
+  handoff_tools.py diff OLD NEW if both contain task records.
+- If a state item cannot fit, preserve a precise path/heading pointer; do not
+  silently delete blockers, constraints or safety/verification notes.
+- A handoff is not a durable execution snapshot or automatic resume mechanism.
+  The receiver must re-check current authorization and environment before acting.

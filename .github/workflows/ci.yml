@@ -1,0 +1,23 @@
+name: Handoff checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Unit and compatibility tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate legacy sample
+        run: python scripts/validate_handoff.py examples/sample-handoff --mode quick
+      - name: Verify budgeted brief
+        run: |
+          python scripts/handoff_tools.py brief examples/sample-handoff --max-chars 900 > /tmp/handoff-brief.txt
+          python -c "from pathlib import Path; assert len(Path('/tmp/handoff-brief.txt').read_text()) <= 901"

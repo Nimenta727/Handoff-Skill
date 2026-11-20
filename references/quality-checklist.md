@@ -1,4 +1,4 @@
-# V1 acceptance checklist
+# V1.1 acceptance checklist
 
 ## Structural (must pass)
 - [ ] Required files exist for mode and manifest accurately lists them.
@@ -23,3 +23,13 @@
 ## Validation limitations
 
 `validate_handoff.py` detects mechanical omissions and certain secret-like patterns. It cannot guarantee no privacy leaks or verify the truth of claims. Run a manual inspection before sharing externally.
+
+## Context efficiency and integrity (V1.1)
+
+- [ ] Receiver starts with a short bounded goal/status/risks/next-action brief, not full transcript injection.
+- [ ] Only relevant evidence is opened; no duplicate copies of code/logs or repeated task records.
+- [ ] Character budget documented; no unverified promises of exact token savings.
+- [ ] If manifest.integrity is present, digest keys cover all listed files and hashes match.
+- [ ] Verified tasks include source, method and observation time; dependencies exist and are acyclic.
+- [ ] Integrity checks are described as byte-change detection, not proof of authorship.
+- [ ] On changes to sealed packages, evidence and diffs were reviewed before explicit reseal.
