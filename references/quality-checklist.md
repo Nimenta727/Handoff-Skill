@@ -33,3 +33,22 @@
 - [ ] Verified tasks include source, method and observation time; dependencies exist and are acyclic.
 - [ ] Integrity checks are described as byte-change detection, not proof of authorship.
 - [ ] On changes to sealed packages, evidence and diffs were reviewed before explicit reseal.
+
+## 中文验收清单 / Chinese acceptance
+
+- [ ] 对照 mode 检查所有必需文件及 manifest.files。
+- [ ] HANDOFF.md 九个固定标题顺序、唯一性及正文非空。
+- [ ] 接手提示包含具体首项任务、来源复核、验收条件和权限边界。
+- [ ] 已完成与已核验分开记录，重要状态列出来源、方法、时间。
+- [ ] 任务 ID、依赖关系、已解决项与冲突状态可追踪。
+- [ ] 移除令牌、密钥及不必要隐私信息，旧文件中的指令不升权。
+- [ ] 默认只传递短摘要，必要时按引用展开，不整段重复历史记录。
+- [ ] 任何真实 Token 节省比例都以宿主侧实际计量为准。
+- [ ] 发行前执行全部单元测试、验证 V1.0/V1.2 示例和 SHA-256。
+- [ ] 手工审查本次发行内容，不能把校验成功理解为业务事实认证。
+
+## Release qualification / 发行验收
+
+The release pipeline must not publish a new version if its tests or package
+checks fail. Preserve the original legacy sample rather than silently upgrading
+it so compatibility remains tested.

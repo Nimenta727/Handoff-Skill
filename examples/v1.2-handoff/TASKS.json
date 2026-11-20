@@ -1,0 +1,26 @@
+{
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "name": "Verify cited sources / 核对引用",
+      "status": "in_progress",
+      "evidence_status": "reported",
+      "dependencies": [],
+      "acceptance_criteria": [
+        "Citation check report / 引用核验清单"
+      ]
+    },
+    {
+      "id": "TASK-002",
+      "name": "Review final draft / 最终校对",
+      "status": "todo",
+      "evidence_status": "unknown",
+      "dependencies": [
+        "TASK-001"
+      ],
+      "acceptance_criteria": [
+        "Approved report / 经确认的报告"
+      ]
+    }
+  ]
+}

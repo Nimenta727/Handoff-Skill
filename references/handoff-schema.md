@@ -87,3 +87,17 @@ Suggested `PROJECT_STATE.md` sections: artifact map, task ledger, domain-specifi
 
 The full handoff remains the source of truth; a brief is a disposable view,
 not another independently maintained state file.
+
+## 中文规范说明 / Chinese schema notes
+
+- 所有交接包的 `HANDOFF.md` 必须保留上方九个**完全相同且只出现一次**
+  的二级标题；可以在章节正文中使用中文或英文，不改标题字符串。
+- quick 必需 HANDOFF.md、NEXT_AGENT_PROMPT.md、manifest.json；
+  full 还需 PROJECT_STATE.md；update 沿用原先 package_mode。
+- schema_version 1.0 与 1.1 均被当前校验器接受。1.2.0 是发行版本，
+  **不是**一个新的 manifest schema 版本。
+- `files` 列出交接目录中的文件名（不包含 manifest 本身）；
+  `integrity.digests` 如存在，应覆盖所有 listed files。
+- 任务进度与证据可信度是独立字段：done/reported 不代表 verified。
+  交接文档声称的命令成功也不能代替当前环境的新一轮检查。
+- SHA-256 用于检测文件被修改，不能证明内容真实或来源可信。

@@ -18,3 +18,15 @@ implicit code execution and claims of exact token savings without measurements.
 
 Future: host-specific measured prompt-token benchmarks; opt-in low-permission
 resume hooks; tests for conflicting and stale evidence; first-action success metrics.
+
+## 中文摘要与架构取舍 / Chinese design notes
+
+调研包括 Agent Skills 规范、OpenAI Agents SDK、LangGraph、社区 Handoff Skills
+和微软上下文工程。主要借鉴渐进式加载、明确任务状态和来源引用，
+而不是集成重量级框架。没有复制第三方实现代码；也不承诺未经实测的
+Token 节省比例。下一步应在 ChatGPT、Claude、Codex 对比真实成本和质量。
+
+## Research limitations / 调研限制
+
+These sources inform architectural choices; the present Skill tests do not
+verify other frameworks' performance claims. No external framework is bundled.

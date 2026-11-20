@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.1",
+  "skill": "agent-handoff",
+  "skill_version": "1.2.0",
+  "mode": "quick",
+  "package_mode": "quick",
+  "generated_at": "2026-11-20T12:00:00+00:00",
+  "language": "zh-CN",
+  "files": [
+    "HANDOFF.md",
+    "NEXT_AGENT_PROMPT.md",
+    "TASKS.json"
+  ],
+  "validation": {
+    "status": "not_run",
+    "notes": "Fictional fixture; structural checks are expected; facts are illustrative."
+  }
+}

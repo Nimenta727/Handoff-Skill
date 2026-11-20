@@ -1,101 +1,192 @@
-# Agent Handoff Skill V1.1
+# Agent Handoff Skill v1.2.0
 
-[中文](#中文说明) · [English](#english)
+**跨 Agent / 跨模型 / 跨会话的轻量交接 Skill。**
+**A portable, token-conscious continuation contract across agents, models and conversations.**
 
-Portable, evidence-aware and token-conscious task handoffs across AI agents,
-models, chat sessions and human collaborators. **Not a transcript summarizer.**
+[中文](#中文) | [English](#english) | [变更记录 / Changelog](CHANGELOG.md) | [发行说明 / Release Notes](RELEASE_NOTES.md)
 
-## 中文说明
+> 交接不是普通对话摘要。它保留下一位接手者需要核对的目标、状态、
+> 证据、阻塞、关键决策和下一步，而不是重复发送完整聊天记录。
+>
+> A handoff is **not** a transcript dump. It carries actionable state, evidence,
+> risks and the next verifiable task without repeating the full conversation.
 
-V1.1 在 V1.0 Quick / Full / Update 的基础上增加：
+## 中文
 
-- **省 Token：**接手先读至多 1200 字符的短摘要，其余文件按需打开；
-  不复制整个聊天、代码或长日志。字符不等于 Tokens。
-- **安全验证：**可选 SHA-256 字节完整性；敏感信息启发式检测；
-  TASKS.json 的依赖环、重复任务、无来源的已验证状态检查。
-- **增量更新：**按稳定 TASK ID 比较新旧任务，无需每次重复全部上下文。
-- **轻量兼容：**仅用 Python 标准库；不用数据库、LLM API 或第三方依赖；
-  保留 V1.0 manifest 兼容性。
+### 核心能力
+
+- **三种模式：**Quick（短交接）、Full（复杂项目）、Update（带证据的更新）。
+- **省 Token：**默认最多 1200 **字符**的接手摘要；先读取简短上下文，
+  再按需展开具体文件与来源，不反复发送历史记录。
+- **任务管理：**可选 TASKS.json，稳定任务 ID、前置依赖、进度与证据等级。
+- **可信验证：**结构与敏感字段启发式检查，SHA-256 文件完整性及任务 DAG 校验。
+- **跨宿主：**纯 Markdown + JSON + Python 标准库；不依赖特定 Agent SDK、
+  数据库、API Key、向量服务或网络运行时。
+- **安全边界：**交接文本并不增加接收者权限；复核来源和授权之后才能行动。
 
 ### 安装
 
-将包含 `SKILL.md` 的仓库目录放入支持 Agent Skills 的客户端 Skill 目录。
-具体安装路径和自动发现行为取决于宿主客户端。没有 Python 的环境可按
-SKILL.md 手工生成相同的交接内容。
+可以从 [Releases](https://github.com/Nimenta727/Handoff-Skill/releases)
+下载 `agent-handoff-v1.2.0.zip`。解压后将内部的 `agent-handoff/`
+完整文件夹放入支持 Agent Skills 的客户端 Skills 目录，确保该目录
+直接包含 `SKILL.md`。不同宿主的路径、发现机制和权限存在差异。
+也可直接克隆仓库使用命令行工具。
 
-### 快速使用
+### 立即使用
 
 ```bash
-# 创建框架；之后必须以真实事实替换示例/占位内容
+# 从仓库根目录运行；生成一个未填写的 quick 交接包
 python3 scripts/handoff_tools.py init ./handoff --mode quick --title "My task"
 
-# 结构、隐私启发式、任务依赖检查
+# 用实际资料替换占位文字后，检查结构和泄漏风险
 python3 scripts/validate_handoff.py ./handoff --mode quick
 
-# 只输出短版接手上下文，最多 1200 字符
+# 输出长度受限的接手摘要（字符，不是精确 Token 数）
 python3 scripts/handoff_tools.py brief ./handoff --max-chars 1200
 
-# 审阅完全部内容后添加 SHA-256 完整性记录
+# 人工核对之后，对载荷进行哈希封存
 python3 scripts/handoff_tools.py seal ./handoff
 
-# 比较两份交接中任务状态的变化
+# 如果有两份包含 TASKS.json 的交接包，可比较变化
 python3 scripts/handoff_tools.py diff ./old-handoff ./new-handoff
 
-# 有意修改已封存内容后，先复核再显式更新校验值
-python3 scripts/handoff_tools.py seal ./new-handoff --renew
-
-python3 -m unittest discover -s tests -v
+# 有意修改已封存内容时，检查差异后明确重新封存
+python3 scripts/handoff_tools.py seal ./handoff --renew
 ```
 
-### 输出格式
+**重要：** `init` 只创建框架，不能自动知道项目的真实状态；
+`brief` 会压缩上下文，但不会验证真实业务结果；
+`seal` 只能检查文件字节变化，不是数字签名。
 
-| 模式 | 必需文件 |
+### 文件与模式
+
+| 模式 | 必需文件 | 主要用途 |
+| --- | --- | --- |
+| Quick | HANDOFF.md、NEXT_AGENT_PROMPT.md、manifest.json | 短会话接续 |
+| Full | Quick 文件 + PROJECT_STATE.md | 大项目、多人交接 |
+| Update | 保持原有 quick/full package_mode | 递增更新任务状态 |
+
+可选 TASKS.json、DECISIONS.md、OPEN_ISSUES.md。所有模式保留九个
+固定 `HANDOFF.md` 标题；现有 manifest schema 1.0 和 1.1 都支持。
+
+### 发行与测试
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/validate_handoff.py examples/sample-handoff --mode quick
+python3 scripts/validate_handoff.py examples/v1.2-handoff --mode quick
+python3 scripts/build_release.py --out dist
+```
+
+构建成功后，`dist/` 下提供安装 ZIP 和对应 SHA-256 校验文件。
+GitHub Actions 会测试后执行发布。请以实际
+[Release 页面](https://github.com/Nimenta727/Handoff-Skill/releases)
+和工作流结果为准，不将代码提交等同于发行成功。
+
+### 目录
+
+| 路径 | 职责 |
 | --- | --- |
-| quick | HANDOFF.md, NEXT_AGENT_PROMPT.md, manifest.json |
-| full | quick 全部文件，以及 PROJECT_STATE.md |
-| update | 保留已有 quick/full 的 package_mode |
+| `SKILL.md` | 精简、双语的 Skill 行为协议 |
+| `references/` | 工作流、Schema、任务、证据规则、双语模板 |
+| `scripts/handoff_tools.py` | 创建、简报、差量对比、校验封存 |
+| `scripts/validate_handoff.py` | 结构、任务 DAG、完整性和敏感模式检查 |
+| `scripts/build_release.py` | 可重现离线发行打包 |
+| `examples/` | 保留 V1.0 兼容样例和新的 V1.2 样例 |
+| `docs/` | Token 预算、开源调研、发行指南、历史 routine |
+| `tests/` | 回归与发行测试 |
 
-可选 TASKS.json：包含任务 ID、进度、证据等级、验收标准和依赖关系，
-需列入 manifest 的 files。可选完整性信息在 manifest.integrity。
+### 限制和隐私
 
-### 安全边界
-
-交接不是授权。接手者必须重新核验来源、权限、测试和运行环境。
-脚本不自动读取历史对话、不执行项目任务、不监听模型上下文、不部署。
-SHA-256 只能发现字节变化，不能证明来源可信或内容真实。
-校验器无法排除全部敏感信息与业务事实错误。
-
-### 结构
-
-- `SKILL.md` — 主协议，优先读取，精简上下文
-- `references/` — 工作流、规范、任务状态、模板和校验规则
-- `scripts/` — 完整性与任务校验，以及 init/brief/diff/seal
-- `tests/` — 新旧版本及异常场景回归
-- `docs/context-budget.md` — 渐进式加载与 Token 衡量方法
-- `docs/open-source-research.md` — 开源方案的借鉴与拒绝项
-- `docs/routine/` — 每次 GitHub 改动的时间记录和后续计划
+- 默认无后台运行、无模型调用、无远程同步、无自动执行任务。
+- 字符数上限不能被误报成 Token 上限；真实节省需要宿主侧测量。
+- 校验器无法验证所有业务事实或找出全部机密。
+- 不要把私人交接包直接提交到公共仓库。
+- 当前仓库没有声明可复用开源许可证；贡献和再分发前应确认授权条款。
 
 ## English
 
-Agent Handoff is a portable continuation contract. It captures task goal,
-current status, evidence confidence, key decisions, blockers, artifacts and
-the next verifiable action. Load a bounded brief before reading deeper sources.
+### Features
 
-Quick setup:
+- **Quick / Full / Update** handoff modes for lightweight session continuation,
+  complex projects and incremental refresh.
+- **Context efficiency:** an on-demand receiver brief bounded to **1,200
+  characters** by default; inspect deeper artifacts only when necessary.
+- **Task fidelity:** optional TASKS.json with stable IDs, prerequisites, status,
+  evidence grade and observable acceptance criteria.
+- **Trust and checks:** structural and heuristic credential validation,
+  optional SHA-256 integrity and dependency-DAG checks.
+- **Portable:** Markdown + JSON, Python standard library tools, no model API,
+  network, database or framework dependency.
+- **Least privilege:** a handoff is source context, never authorization.
+
+### Install
+
+Download `agent-handoff-v1.2.0.zip` from
+[Releases](https://github.com/Nimenta727/Handoff-Skill/releases),
+extract it, and install the enclosed `agent-handoff/` folder in your host's
+Skills directory. `SKILL.md` must be present at that folder's root.
+Discovery, slash commands and permitted tools are host-specific.
+
+### Commands
 
 ```bash
 python3 scripts/handoff_tools.py init ./handoff --mode quick --title "Project"
-python3 scripts/validate_handoff.py ./handoff
+# Populate with verified project data before continuing:
+python3 scripts/validate_handoff.py ./handoff --mode quick
 python3 scripts/handoff_tools.py brief ./handoff --max-chars 1200
 python3 scripts/handoff_tools.py seal ./handoff
+python3 scripts/handoff_tools.py diff ./old-handoff ./new-handoff
+# Review intentional edits before resealing:
+python3 scripts/handoff_tools.py seal ./handoff --renew
 ```
 
-The 1200-character limit is **not** a measured token count. True savings must
-be measured using the receiving host and tokenizer. V1.0 packages remain valid;
-manifest.integrity and TASKS.json are optional V1.1 additions.
+These commands work locally without model calls. `init` is a scaffold, not
+automatic context retrieval. `brief` constrains characters, not model tokens.
+`seal` checks file bytes, not source authenticity or factual correctness.
 
-See [context budget](docs/context-budget.md),
-[task schema](references/task-state.md),
-[open-source design research](docs/open-source-research.md),
-and [routine logs](docs/routine/).
-Based on the [Agent Skills specification](https://agentskills.io/specification).
+### Modes and backwards compatibility
+
+| Mode | Required files | Typical purpose |
+| --- | --- | --- |
+| quick | HANDOFF.md, NEXT_AGENT_PROMPT.md, manifest.json | Session transition |
+| full | quick files + PROJECT_STATE.md | Large project/person handover |
+| update | existing quick/full package_mode | Reconcile newer evidence |
+
+Optional: TASKS.json, DECISIONS.md, OPEN_ISSUES.md. The nine exact headings
+in HANDOFF.md remain unchanged; schema 1.0 and 1.1 are accepted.
+
+### Tests and distribution
+
+```bash
+python3 -m unittest discover -s tests -v
+python3 scripts/validate_handoff.py examples/sample-handoff --mode quick
+python3 scripts/validate_handoff.py examples/v1.2-handoff --mode quick
+python3 scripts/build_release.py --out dist
+```
+
+The distribution is a reproducible ZIP with a companion SHA-256 checksum.
+The automated release workflow is responsible for publishing the assets;
+verify completion on the
+[GitHub Releases page](https://github.com/Nimenta727/Handoff-Skill/releases).
+
+### Security and limitations
+
+No background monitoring, remote storage or autonomous execution is bundled.
+Sensitive source data should be redacted before handoff sharing. The validator
+cannot guarantee truth or detect every secret. Real token savings require
+measurement in the specific model/host; character limits are not token counts.
+The repository does not currently declare an open-source license; verify
+redistribution permissions separately.
+
+## Further reading / 延伸阅读
+
+[Context budget / Token 预算](docs/context-budget.md) ·
+[Workflow / 工作流](references/workflow.md) ·
+[Schema / 格式](references/handoff-schema.md) ·
+[Task state / 任务状态](references/task-state.md) ·
+[Open-source review / 开源调研](docs/open-source-research.md) ·
+[Release guide / 发行指南](docs/release-guide.md) ·
+[Routine history / 历史记录](docs/routine/)
+
+Format inspired by the [Agent Skills specification](https://agentskills.io/specification).

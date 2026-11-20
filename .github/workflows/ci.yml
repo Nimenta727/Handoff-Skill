@@ -1,23 +1,43 @@
-name: Handoff checks
+name: Handoff quality checks
 on:
   push:
     branches: [main]
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.13']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Unit and compatibility tests
+          python-version: ${{ matrix.python-version }}
+      - name: Unit and bilingual release tests
         run: python -m unittest discover -s tests -v
-      - name: Validate legacy sample
-        run: python scripts/validate_handoff.py examples/sample-handoff --mode quick
-      - name: Verify budgeted brief
+      - name: Validate legacy and current samples
         run: |
-          python scripts/handoff_tools.py brief examples/sample-handoff --max-chars 900 > /tmp/handoff-brief.txt
-          python -c "from pathlib import Path; assert len(Path('/tmp/handoff-brief.txt').read_text()) <= 901"
+          python scripts/validate_handoff.py examples/sample-handoff --mode quick
+          python scripts/validate_handoff.py examples/v1.2-handoff --mode quick
+      - name: Verify bounded brief
+        run: |
+          python scripts/handoff_tools.py brief examples/v1.2-handoff --max-chars 900 > /tmp/brief.txt
+          python -c "from pathlib import Path; assert len(Path('/tmp/brief.txt').read_text(encoding='utf-8')) <= 901"
+      - name: Build and checksum distribution
+        run: |
+          python scripts/build_release.py --out dist
+          cd dist
+          sha256sum -c *.sha256
+      - name: Upload ZIP and checksum
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: handoff-distribution
+          path: dist/*
+          if-no-files-found: error

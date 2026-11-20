@@ -1,43 +1,43 @@
-# [任务名称] — 完整 Agent 交接文档
+# [Task name / 任务名称] — Full Agent Handoff / 完整交接
 
-> 交接模式：Full | 生成时间：[ISO-8601 timezone] | 接收方：[AI Agent / 人类]
+> Mode / 模式: Full | Generated / 生成: [ISO-8601 with timezone] | Recipient / 接收方: [Agent or human]
+
+> Choose one output language to avoid duplication. Use additional documents only when material. / 正式输出时只保留一种语言，按需生成附录。
 
 ## 01. 交接摘要
 
-[简述任务、阶段、最新成果、最大风险、马上要做的事；更新模式增加“自上次交接以来变化”]
+[任务、阶段、最新结果、重大风险与下一步；Update 时补充本轮变化。 / Task, stage, latest result, risk and first action; add delta for Update.]
 
 ## 02. 背景与目标
 
-[背景、需求演进、范围内/范围外、验收目标]
+[需求演进、范围、目标、硬约束与验收条件。 / History, scope, goal, hard constraints, acceptance.]
 
 ## 03. 当前状态
 
-[状态总览，链接至 PROJECT_STATE.md；显式区分进度和证据可靠性]
+[概览并引用 PROJECT_STATE.md；分别报告完成度与证据等级。 / Overview with PROJECT_STATE.md reference; separate progress and confidence.]
 
 ## 04. 已有成果
 
-[交付物及路径、状态、是否已核验；可引用 PROJECT_STATE.md]
+[成果位置、版本、校验命令、已核验与未知项。 / Artifact map, revisions, test commands and unverified gaps.]
 
 ## 05. 关键决策
 
-[主要选择、原因、备选方案；较长内容链接 DECISIONS.md]
+[决策、理由、被拒绝选项及其影响；可链接 DECISIONS.md。 / Decisions, rationale, alternatives rejected; link DECISIONS.md if necessary.]
 
 ## 06. 未解决事项
 
-[风险、阻塞、冲突与未知项；较长内容链接 OPEN_ISSUES.md]
+[风险、阻塞、互相矛盾的证据与验证方案；可链接 OPEN_ISSUES.md。 / Risks, blockers, conflicting evidence and resolution checks.]
 
 ## 07. 下一步计划
 
-[优先队列；首项任务的行动、前提、具体产出和验收条件]
+[明确优先队列，首项动作须包含输入、操作、成果和验收标准。 / Ordered tasks; first action with inputs, steps, deliverable and acceptance.]
 
 ## 08. 接手操作
 
-[资料阅读顺序、运行/复核步骤、许可限制、推荐第一轮回复]
+[依次读取什么、复现实验、权限检查、何时暂停并寻求授权。 / Reading order, reproduction checks, permissions and approval gates.]
 
 ## 09. 来源与限制
 
-[各类证据及访问范围、观察时间、未访问内容、信任边界]
+[已访问来源、观察日期、不可用资料、证据可信度、隐私约束。 / Inspected sources, dates, unavailable evidence, confidence and privacy.]
 
----
-
-附录 `PROJECT_STATE.md` 推荐包括：成果目录、任务表、领域专用环境记录、验证证据、已知失败。`DECISIONS.md` 和 `OPEN_ISSUES.md` 仅在确有内容时创建。
+> Optional appendices / 可选附录: PROJECT_STATE.md (required for Full), DECISIONS.md and OPEN_ISSUES.md only when beneficial.

@@ -1,39 +1,41 @@
-# [任务名称] — Agent 交接文档
+# [Task name / 任务名称] — Agent Handoff / 交接文档
 
-> 交接模式：Quick | 生成时间：[ISO-8601 timezone] | 接收方：[AI Agent / 人类]
+> Mode / 模式: Quick | Generated / 生成: [ISO-8601 with timezone] | Recipient / 接收方: [Agent or person / Agent 或人类]
+
+> Fill only in the receiver's preferred language to avoid duplicated context. / 正式交接时只保留接收者使用的语言，减少重复 Token。
 
 ## 01. 交接摘要
 
-[当前目标、核心结果、最紧急下一步，最多 5 句话]
+[最多五句话：任务目标、当前进展、最紧急下一步。 / Up to five sentences: goal, current result and immediate next step.]
 
 ## 02. 背景与目标
 
-[最终目标、用户指定的边界、成功标准]
+[最终目标、不可违反的约束、验收标准。 / Final goal, hard constraints and acceptance criteria.]
 
 ## 03. 当前状态
 
-[已完成 / 进行中 / 待办 / 阻塞；把任务状态与证据状态区分开]
+[done / in_progress / todo / blocked 与 verified / reported / inferred / unknown / conflicted 分开记录。 / Separate progress from evidence confidence.]
 
 ## 04. 已有成果
 
-[成果名称、可访问位置、状态、验证证据或未知]
+[成果文件位置、版本、检查方法；没有核验就注明。 / Artifact path, version and checks performed; mark missing verification.]
 
 ## 05. 关键决策
 
-[决策及依据；没有则写“无适用内容”]
+[重要决策及依据；无则写无适用内容。 / Key decisions and reasons; Not applicable if none.]
 
 ## 06. 未解决事项
 
-[风险、阻塞和需验证的猜测；没有则写“无已知事项（按当前可见资料）”]
+[阻塞、风险、证据冲突和需核对内容。 / Blockers, risks, conflicts and unknowns.]
 
 ## 07. 下一步计划
 
-[优先级最高的可执行动作：所需输入 / 行动 / 验收标准]
+[最优先任务：输入、动作、负责方（若已知）与可观察验收标准。 / First priority: prerequisites, action, owner if known, verifiable acceptance.]
 
 ## 08. 接手操作
 
-[读取资料次序；首先检查的事实；安全边界；启动步骤]
+[先读取的文件、优先核验的事实、当前权限边界。 / Reading order, first checks and permission boundary.]
 
 ## 09. 来源与限制
 
-[查看的资料及范围、时间；未访问资料；声明的可信状态；限制]
+[已查看与无法查看的来源、核验范围、时间与风险。 / Inspected and unavailable sources, verification scope/time and limitations.]

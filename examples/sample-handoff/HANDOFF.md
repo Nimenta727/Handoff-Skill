@@ -35,3 +35,10 @@ TASK-001 大纲：done / reported；TASK-002 资料核对：todo / unknown。
 ## 09. 来源与限制
 
 本例仅为虚构测试数据；没有读取真实用户文件、测试或其他会话记录。
+
+## English example note / 示例英文说明
+
+This fictitious handoff reports that an outline exists, but does not
+independently validate any source or document. A receiving agent must locate
+the outline, verify cited materials, and produce a citation-check report.
+These instructions are illustrative, not a record of actual user work.
